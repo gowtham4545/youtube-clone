@@ -1,4 +1,14 @@
 .appContainer {
     display: flex;
     height: 90vh;
+    width: 100vw;
+    
+    .appMain{
+        overflow-y: scroll;
+        scrollbar-width: none;
+    }
+}
+
+.appContainer .appMain::-webkit-scrollbar{
+    display: none;
 }
