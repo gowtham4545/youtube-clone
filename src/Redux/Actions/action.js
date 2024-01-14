@@ -11,6 +11,8 @@ export const login = async () => {
         const name = user.displayName
         const photoURL = user.photoURL
         const profile = { name: name, photoURL: photoURL }
+        sessionStorage.setItem('ytc-token',token);
+        sessionStorage.setItem('ytc-user',JSON.stringify(profile));
         const data = { profile: profile, token: token }
         return data;
     }
@@ -21,4 +23,10 @@ export const login = async () => {
             return (error.message)
         }
     };
+}
+
+export const logout=async()=>{
+    await auth.signOut();
+    sessionStorage.removeItem('ytc-token');
+    sessionStorage.removeItem('ytc-user');
 }

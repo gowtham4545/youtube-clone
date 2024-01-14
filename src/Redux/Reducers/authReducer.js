@@ -1,39 +1,43 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { } from '../constants'
-import { login } from "../Actions/action";
+import { login, logout } from "../Actions/action";
 
 const initialState = {
-    accessToken: null,
-    user: null,
+    accessToken: sessionStorage.getItem('ytc-token') ? sessionStorage.getItem('ytc-token') : null,
+    user: sessionStorage.getItem('ytc-user') ? JSON.parse(sessionStorage.getItem('ytc-user')) : null,
     loading: false,
     error: null,
     success: false
 }
 
-export const action = createAsyncThunk('auth/login', login);
+export const signIn = createAsyncThunk('auth/login', login);
+export const signOut = createAsyncThunk('auth/logout', logout);
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     extraReducers: lifeCycle => {
-        lifeCycle.addCase(action.pending, (state) => {
+        lifeCycle.addCase(signIn.pending, (state) => {
             state.loading = true;
             state.error = null;
         });
-        lifeCycle.addCase(action.fulfilled, (state, {payload}) => {
+        lifeCycle.addCase(signIn.fulfilled, (state, { payload }) => {
             state.loading = false;
             state.success = true;
             state.user = payload.profile;
             state.accessToken = payload.token;
             state.error = null;
         });
-        lifeCycle.addCase(action.rejected, (state, { payload }) => {
+        lifeCycle.addCase(signIn.rejected, (state, { payload }) => {
             state.loading = false;
             state.error = payload;
             state.accessToken = null;
         });
+        lifeCycle.addCase(signOut.fulfilled,(state)=>{
+            state.accessToken=null;
+            state.user=null;
+        })
     }
 });
 
-// export action;
 export default authSlice.reducer;

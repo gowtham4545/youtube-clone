@@ -3,9 +3,10 @@ import Header from "./Components/Header/Header";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import HomeScreen from './Components/Screens/HomeScreen/HomeScreen';
 import './_app.scss';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginScreen from "./Components/Screens/LoginScreen/LoginScreen";
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 const Layout = (props) => {
     const [sidebar, toggleSidebar] = useState(true);
@@ -24,28 +25,33 @@ const Layout = (props) => {
 }
 
 function App() {
+    const { accessToken, user } = useSelector(state => state.auth);
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (!accessToken) {
+            navigate('/auth');
+        }
+    }, [accessToken, navigate]);
     return (
-        <Router>
-            <Routes>
-                <Route path="/" exact >
-                    <Route path="" element={
-                        <Layout>
-                            <HomeScreen />
-                        </Layout>
-                    } />
-                    <Route path="search" element={
-                        <h1>Search Screen</h1>
-                    } />
-                </Route>
-
-                <Route path="/auth" exact element={
-                    <LoginScreen />
+        <Routes>
+            <Route path="/" exact >
+                <Route path="" element={
+                    <Layout>
+                        <HomeScreen />
+                    </Layout>
                 } />
-                <Route path="*" element={
-                    <Navigate to='/' replace/>
-                }/>
-            </Routes>
-        </Router>
+                <Route path="search" element={
+                    <h1>Search Screen</h1>
+                } />
+            </Route>
+
+            <Route path="/auth" exact element={
+                <LoginScreen />
+            } />
+            <Route path="*" element={
+                <Navigate to='/' replace />
+            } />
+        </Routes>
     );
 }
 
