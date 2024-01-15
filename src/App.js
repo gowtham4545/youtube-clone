@@ -25,7 +25,7 @@ const Layout = (props) => {
 }
 
 function App() {
-    const { accessToken, user } = useSelector(state => state.auth);
+    const { accessToken } = useSelector(state => state.auth);
     const navigate = useNavigate()
     useEffect(() => {
         if (!accessToken) {

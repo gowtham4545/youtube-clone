@@ -4,6 +4,7 @@ import auth from '../../firebase'
 export const login = async () => {
     try {
         const provider = new GoogleAuthProvider();
+        provider.addScope("https://www.googleapis.com/auth/youtube.force-ssl");
         const res = await signInWithPopup(auth, provider);
         console.log(res);
         const user = res.user;

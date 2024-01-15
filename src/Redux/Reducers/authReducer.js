@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { } from '../constants'
-import { login, logout } from "../Actions/action";
+import { login, logout } from "../Actions/authAction";
 
 const initialState = {
     accessToken: sessionStorage.getItem('ytc-token') ? sessionStorage.getItem('ytc-token') : null,
