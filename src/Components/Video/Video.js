@@ -18,21 +18,38 @@ const Video = ({ video, key }) => {
 
     const [views, setViews] = useState(null)
     const [duration, setDuration] = useState(null)
+    const [channelIcon, setChannelIcon] = useState(null)
 
     useEffect(() => {
-        const getVideoDetails = async () => {
-            const { data: { items } } = await request("/videos", {
+        try {
+            const getVideoDetails = async () => {
+                const { data: { items } } = await request("/videos", {
+                    params: {
+                        part: "contentDetails,statistics",
+                        id: id,
+                    },
+                })
+                setDuration(items[0].contentDetails.duration)
+                setViews(items[0].statistics.viewCount)
+            }
+            getVideoDetails();
+        } catch (error) { }
+    }, [id]);
+
+    useEffect(() => {
+        const getChannelIcon = async () => {
+            const {
+                data: { items },
+            } = await request('/channels', {
                 params: {
-                    part: "contentDetails,statistics",
-                    id: id,
+                    part: 'snippet',
+                    id: channelId
                 },
             })
-            console.log(items);
-            setDuration(items[0].contentDetails.duration)
-            setViews(items[0].statistics.viewCount)
+            setChannelIcon(items[0].snippet.thumbnails.default);
         }
-        getVideoDetails();
-    }, [id]);
+        getChannelIcon()
+    }, [channelId])
 
     const mSec = moment.duration(duration).asSeconds();
     const _duration = moment.utc(mSec * 1000).format("mm:ss");
@@ -53,7 +70,7 @@ const Video = ({ video, key }) => {
                 <span>{moment(publishedAt).fromNow()}</span>
             </div>
             <div className="videoChannel">
-                <img src="https://yt3.ggpht.com/tV7mR48kz0fcbL4056L7S_pfqygwKrRQB1Rb8YPP32CLnA8NT14zc9Cp87v6Xj1yWUl7N6hW=s68-c-k-c0x00ffffff-no-rj" alt="" />
+                <img src={channelIcon ? channelIcon.url : ''} alt="" />
                 <div>{channelTitle}</div>
             </div>
         </div>
